@@ -74,7 +74,7 @@ def error(update, context):
 
 
 def main():
-    updater = telegram.ext.Updater("1017478270:AAHDBewuiD-Bn2KqgAJ5NaoE4NGpebHmZ6Y", workers=8, use_context=True)
+    updater = telegram.ext.Updater("1017478270:AAHkUYL3tOWMEvFnPCqduFeDpzLgHNHnPDo", workers=8, use_context=True)
     dp = updater.dispatcher
     # dp.add_handler(telegram.ext.CommandHandler("start", start_command, telegram.ext.Filters.private))
 

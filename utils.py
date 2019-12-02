@@ -200,14 +200,31 @@ def connect_server(link, data, repeat=3):
     return connect_server(link, data, repeat - 1)
 
 
-def send_error(context):
-    msg = ""
-    msg += ""
-    context.bot.send_message(context.user_data["user_id"], text=msg)
+def user_talk_init(func):
+    @wraps(func)
+    def init_func(update, context, *args, **kwargs):
+        user_id = update.effective_user.id
+        if "user_id" not in context.user_data.keys():
+            context.user_data["user_id"] = user_id
+        if "input_state" not in context.user_data.keys():
+            context.user_data["input_state"] = ""
+        if "data" not in context.user_data.keys():
+            context.user_data["data"] = {}
+            context.user_data["data"]["input"] = ""
+        if "register" not in context.user_data.keys():
+            context.user_data["register"] = False
+            output, error_code = connect_server("user/check/", {'user_id': user_id}, repeat=1)
+            if output and error_code == 0:
+                context.user_data["register"] = True
+                context.user_data["user"] = output
+
+        return func(update, context, *args, **kwargs)
+
+    return init_func
 
 
 class Application:
-    def __init__(self, update, context, query, is_message=False, is_callback=False, is_inline=False):
+    def __init__(self, update, context, query="", is_message=False, is_callback=False, is_inline=False):
         self.update = update
         self.context = context
         self.query = query
@@ -215,21 +232,62 @@ class Application:
         self.is_callback = is_callback
         self.is_inline = is_inline
         self.user_id = self.context.user_data["user_id"]
+        self.class_name = self.__class__.__name__.lower()
 
     def change_query(self):
+        if len(self.query) == 0:
+            return None
         index = self.query[0]
         self.query = self.query[1:]
         return index
 
-    def send_message(self, message, keyboard=None, edit=False):
-        if edit:
+    def handle(self):
+        index = self.change_query()
+        if index is None:
+            if self.context.user_data["register"] or self.class_name == "Start":
+                self.run()
+            else:
+                msg = ""
+                msg += "حساب کاربری شما یافت نشد." + "\n"
+                msg += "جهت ادامه کار با ربات ثبت نام نمایید." + "\n"
+                register_button = telegram.InlineKeyboardButton("ثبت نام", callback_data="start#get_name")
+                keyboard = telegram.InlineKeyboardMarkup([[register_button]])
+                if self.is_callback:
+                    self.answer_callback(msg, True)
+                elif self.is_inline:
+                    pass
+                else:
+                    self.send_message(msg, keyboard)
+        else:
             try:
-                self.context.bot.edit_message_text(message, self.user_id, self.update.effective_message.message_id,
-                                                   reply_markup=keyboard, parse_mode=telegram.ParseMode.HTML)
+                getattr(self, index)()
             except Exception as e:
+                self.send_message("دستور نامشخص است. دوباره امتحان نمایید.")
                 print(e)
+
+    def run(self):
+        print(self.class_name, ": Not define run function", sep="")
+
+    def send_message(self, message, keyboard=None, edit=False):
+        try:
+            if edit:
+                try:
+                    self.context.bot.edit_message_text(message, self.user_id, self.update.effective_message.message_id,
+                                                       reply_markup=keyboard, parse_mode=telegram.ParseMode.HTML)
+                except Exception as e:
+                    print(e)
+                    self.context.bot.send_message(self.user_id, text=message, reply_markup=keyboard,
+                                                  parse_mode=telegram.ParseMode.HTML)
+            else:
                 self.context.bot.send_message(self.user_id, text=message, reply_markup=keyboard,
                                               parse_mode=telegram.ParseMode.HTML)
-        else:
-            self.context.bot.send_message(self.user_id, text=message, reply_markup=keyboard,
-                                          parse_mode=telegram.ParseMode.HTML)
+        except Exception as e:
+            print("Error in send message", e)
+
+    def answer_callback(self, message, alert=False):
+        if not self.is_callback:
+            return
+        try:
+            self.context.bot.answer_callback_query(self.update.callback_query.id, text=message, show_alert=alert)
+        except Exception as e:
+            print("Error in answer callback:", e)

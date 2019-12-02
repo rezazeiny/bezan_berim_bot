@@ -231,8 +231,12 @@ class Application:
         self.is_message = is_message
         self.is_callback = is_callback
         self.is_inline = is_inline
-        self.user_id = self.context.user_data["user_id"]
+        self.user_data = self.context.user_data
+        self.user_id = self.user_data["user_id"]
+        self.input_data = self.user_data["data"]["input"]
         self.class_name = self.__class__.__name__.lower()
+        self.message = ""
+        self.keyboard = [[]]
 
     def change_query(self):
         if len(self.query) == 0:
@@ -244,50 +248,56 @@ class Application:
     def handle(self):
         index = self.change_query()
         if index is None:
-            if self.context.user_data["register"] or self.class_name == "Start":
+            if self.user_data["register"] or self.class_name == "Start":
                 self.run()
             else:
-                msg = ""
-                msg += "حساب کاربری شما یافت نشد." + "\n"
-                msg += "جهت ادامه کار با ربات ثبت نام نمایید." + "\n"
+                self.message += "حساب کاربری شما یافت نشد." + "\n"
+                self.message += "جهت ادامه کار با ربات ثبت نام نمایید." + "\n"
                 register_button = telegram.InlineKeyboardButton("ثبت نام", callback_data="start#get_name")
-                keyboard = telegram.InlineKeyboardMarkup([[register_button]])
+                self.keyboard = [[register_button]]
                 if self.is_callback:
-                    self.answer_callback(msg, True)
+                    self.answer_callback(True)
                 elif self.is_inline:
                     pass
                 else:
-                    self.send_message(msg, keyboard)
+                    self.send_message()
         else:
             try:
                 getattr(self, index)()
             except Exception as e:
-                self.send_message("دستور نامشخص است. دوباره امتحان نمایید.")
+                self.message = "دستور نامشخص است. دوباره امتحان نمایید."
+                self.send_message()
                 print(e)
 
     def run(self):
         print(self.class_name, ": Not define run function", sep="")
+        self.message = "دستور مورد نظر پیاده سازی نشده است."
+        self.send_message()
 
-    def send_message(self, message, keyboard=None, edit=False):
+    def send_message(self):
         try:
-            if edit:
-                try:
-                    self.context.bot.edit_message_text(message, self.user_id, self.update.effective_message.message_id,
-                                                       reply_markup=keyboard, parse_mode=telegram.ParseMode.HTML)
-                except Exception as e:
-                    print(e)
-                    self.context.bot.send_message(self.user_id, text=message, reply_markup=keyboard,
-                                                  parse_mode=telegram.ParseMode.HTML)
-            else:
-                self.context.bot.send_message(self.user_id, text=message, reply_markup=keyboard,
-                                              parse_mode=telegram.ParseMode.HTML)
+            self.context.bot.send_message(self.user_id, text=self.message,
+                                          reply_markup=telegram.InlineKeyboardMarkup(self.keyboard),
+                                          parse_mode=telegram.ParseMode.HTML)
         except Exception as e:
             print("Error in send message", e)
 
-    def answer_callback(self, message, alert=False):
+    def edit_message(self):
+        try:
+            self.context.bot.edit_message_text(self.message, self.user_id, self.update.effective_message.message_id,
+                                               reply_markup=telegram.InlineKeyboardMarkup(self.keyboard),
+                                               parse_mode=telegram.ParseMode.HTML)
+
+        except Exception as e:
+            print("Error in edit message", e)
+
+    def answer_callback(self, alert=False):
         if not self.is_callback:
             return
         try:
-            self.context.bot.answer_callback_query(self.update.callback_query.id, text=message, show_alert=alert)
+            self.context.bot.answer_callback_query(self.update.callback_query.id, text=self.message, show_alert=alert)
         except Exception as e:
             print("Error in answer callback:", e)
+
+    def set_input_state(self, command):
+        self.user_data["input_state"] = command

@@ -2,7 +2,7 @@ from utils import *
 import telegram
 
 
-class createbill(Application):
+class Createbill(Application):
     money = 0
     payed = ""
     list = ""

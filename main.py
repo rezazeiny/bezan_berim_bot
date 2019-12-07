@@ -1,4 +1,5 @@
 import sys
+from uuid import uuid4
 
 import telegram.ext
 import telegram.utils
@@ -66,7 +67,35 @@ def callback_query_handler(update, context):
 
 
 def inline_query_handler(update, context):
-    print(update)
+    # query = query.lower().split("#")
+    # if len(query) == 0:
+    #     return
+    # index = query[0]
+    # index = index[0].upper() + index[1:].lower()
+    # query = query[1:]
+    # main_class.commands[index](update, context, query, is_message=is_message, is_callback=is_callback,
+    #                            is_inline=is_inline).handle()
+    # print(update)
+    query = update.inline_query.query
+    results = [
+        telegram.InlineQueryResultArticle(
+            id=uuid4(),
+            title="Test1",
+            input_message_content=telegram.InputTextMessageContent("salam"),
+            reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("اتمام ثبت نام", callback_data="start#register_user")],
+                          [telegram.InlineKeyboardButton("انصراف و تغییر نام", callback_data="start#get_name")]]),
+            url="google.com",
+            description="sskd didk dok"
+        ),
+    ]
+    # results = [
+    #     telegram.InlineQueryResultArticle(
+    #         id=uuid4(),
+    #         title="Caps",
+    #         input_message_content=telegram.InputTextMessageContent(query.upper()))]
+
+    update.inline_query.answer(results, cache_time=0, is_personal=False, switch_pm_text="سلام",
+                               switch_pm_parameter="starting")
 
 
 def all_handler(update, context, query, is_message=False, is_callback=False, is_inline=False):
@@ -91,7 +120,7 @@ def main():
     # todo: uncomment this for release
     updater = telegram.ext.Updater(TELEGRAM_API, workers=8, use_context=True)
     # todo: uncomment this for test
-    # updater = telegram.ext.Updater("1000540195:AAF6xxRK_KEb0Iz2H9Qqaiz7ZXWcNr-eb3Q", workers=8, use_context=True)
+    updater = telegram.ext.Updater("1000540195:AAF6xxRK_KEb0Iz2H9Qqaiz7ZXWcNr-eb3Q", workers=8, use_context=True)
     dp = updater.dispatcher
     # dp.add_handler(telegram.ext.CommandHandler("start", start_command, telegram.ext.Filters.private))
 

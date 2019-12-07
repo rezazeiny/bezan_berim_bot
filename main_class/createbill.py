@@ -6,7 +6,7 @@ class Createbill(Application):
     money = 0
     payed = ""
     list = ""
-
+    # salam
     def __init__(self, update, context, query, is_message=False, is_callback=False, is_inline=False):
         super().__init__(update, context, query, is_message, is_callback, is_inline)
         self.event_data = None

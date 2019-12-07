@@ -89,8 +89,8 @@ def error(update, context):
 
 def main():
     # todo: uncomment this for release
-    #updater = telegram.ext.Updater(TELEGRAM_API, workers=8, use_context=True)
-    #todo: uncomment this for test
+    # updater = telegram.ext.Updater(TELEGRAM_API, workers=8, use_context=True)
+    # todo: uncomment this for test
     updater = telegram.ext.Updater("1000540195:AAF6xxRK_KEb0Iz2H9Qqaiz7ZXWcNr-eb3Q", workers=8, use_context=True)
     dp = updater.dispatcher
     # dp.add_handler(telegram.ext.CommandHandler("start", start_command, telegram.ext.Filters.private))

@@ -16,18 +16,17 @@ class Createbill(Application):
             self.send_message()
             self.set_input_state("createbill#get_placename")
 
-    def get_palcename(self):
+    def get_placename(self):
         self.event_data["name"] = self.input_data
         self.message += "آیا نام رویداد مورد تایید است؟"
-        self.keyboard = ([[telegram.InlineKeyboardButton("بله", callback_data="createbill#get_paiedname")],
+        self.keyboard = ([[telegram.InlineKeyboardButton("بله", callback_data="createbill#get_payedname")],
                           [telegram.InlineKeyboardButton("انصراف و تغییر نام",
                                                          callback_data="createbill#get_placename")]])
         self.send_message()
 
-    def get_paiedname(self):
+    def get_payedname(self):
         self.message = "چه کسی هزینه کرده؟" + "\n"
         self.send_message()
-        self.set_input_state("createbill#get_placename")
         self.payed = self.input_data
         self.get_moneypayed()
 
@@ -38,7 +37,7 @@ class Createbill(Application):
             self.money = self.input_data
             self.get_moneypayedfor()
         else:
-            self.message += "مبلغ وارد شده اشتباه است دوباره تلاش کنید"
+            self.message += "ورودی داده شده اشتباه است دوباره تلاش کنید"
             self.send_message()
             self.get_moneypayed()
 

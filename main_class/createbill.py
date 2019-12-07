@@ -12,21 +12,6 @@ class Createbill(Application):
         self.event_data = None
 
     def run(self):
-        output, error_code = connect_server("user/check/", {'user_id': self.user_id})
-        if output is None:
-            self.message = "مشکلی در ارتباط با سرور پیش آمده. لطفا مدتی بعد تلاش نمایید."
-            self.send_message()
-            return
-        if error_code == 1:
-            self.user_data["register"] = False
-            self.message += "حساب کاربری شما یافت نشد." + "\n"
-            self.message += "جهت ادامه کار با ربات ثبت نام نمایید." + "\n"
-            self.keyboard = [[telegram.InlineKeyboardButton("ثبت نام", callback_data="start#get_name")]]
-            self.send_message()
-            return
-        elif error_code == 0:
-            self.user_data["register"] = True
-            self.user_data["user"] = output
             self.message = "اسم رخداد را وارد کنید." + "\n"
             self.send_message()
             self.set_input_state("createbill#get_placename")

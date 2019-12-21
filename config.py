@@ -9,7 +9,9 @@ SERVER_URL = "http://localhost:8000/"
 CREATOR_PHONE = "+989350633006"
 CREATOR_EMAIL = "rezazeiny1998@gmail.com"
 CREATOR_ID = 95341489
-
+CHANNEL_NAME = "@bezzan_berim"
+BOT_NAME = "@bezzan_berimbot"
+DEBUG = True
 
 PYTHON_PATH = os.path.realpath(__file__)
 PYTHON_DIRECTORY = "/".join(PYTHON_PATH.split("/")[:-1])

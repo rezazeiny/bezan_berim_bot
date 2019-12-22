@@ -14,8 +14,7 @@ def user_talk_init(func):
         if "input_state" not in context.user_data.keys():
             context.user_data["input_state"] = ""
         if "data" not in context.user_data.keys():
-            context.user_data["data"] = {}
-            context.user_data["data"]["input"] = ""
+            context.user_data["data"] = {"input": ""}
         if "cache" not in context.user_data.keys():
             context.user_data["cache"] = {}
         if "register" not in context.user_data.keys():
@@ -45,9 +44,12 @@ class Application:
         self.input_data = self.user_data["data"]["input"]
         self.class_name = self.__class__.__name__.lower()
 
-        self.group_id = -1
+        self.group_id = 0
         self.group = None
         self.group_link = ""
+
+        self.chat_id = 0
+        self.chat = None
 
         self.callback = ""
         self.callback_reply = False
@@ -116,33 +118,37 @@ class Application:
         if self.is_inline:
             self.inline_parameter = "change_name"
             self.answer_inline("ثبت نام نمایید")
-        self.send_edit()
-        return
+        else:
+            self.send_edit()
 
     def run(self):
         print(self.class_name, ": Not define run function", sep="")
         self.add_message("دستور مورد نظر پیاده سازی نشده است.")
         self.send_message()
 
-    def send_message(self, message="", keyboard=None):
+    def send_message(self, message="", keyboard=None, chat_id=0):
         if message == "":
             message = self.message
         if keyboard is None:
             keyboard = self.keyboard
+        if chat_id == 0:
+            chat_id = self.user_id
         try:
-            self.context.bot.send_message(self.user_id, text=message,
-                                          reply_markup=telegram.InlineKeyboardMarkup(keyboard),
-                                          parse_mode=telegram.ParseMode.HTML)
+            return self.context.bot.send_message(chat_id, text=message,
+                                                 reply_markup=telegram.InlineKeyboardMarkup(keyboard),
+                                                 parse_mode=telegram.ParseMode.HTML)
         except Exception as e:
             print("Error in send message", e)
 
-    def edit_message(self, message="", keyboard=None, caption=""):
+    def edit_message(self, message="", keyboard=None, caption="", chat_id=0):
         if message == "":
             message = self.message
         if keyboard is None:
             keyboard = self.keyboard
         if caption == "":
             caption = self.caption
+        if chat_id == 0:
+            chat_id = self.user_id
         try:
             if self.is_callback:
                 self.callback_reply = True
@@ -152,12 +158,12 @@ class Application:
                                                        reply_markup=telegram.InlineKeyboardMarkup(keyboard),
                                                        parse_mode=telegram.ParseMode.HTML, caption=caption)
                 else:
-                    self.context.bot.edit_message_text(message, self.user_id,
+                    self.context.bot.edit_message_text(message, chat_id,
                                                        self.update.callback_query.message.message_id,
                                                        reply_markup=telegram.InlineKeyboardMarkup(keyboard),
                                                        parse_mode=telegram.ParseMode.HTML, caption=caption)
             else:
-                self.context.bot.edit_message_text(message, self.user_id,
+                self.context.bot.edit_message_text(message, chat_id,
                                                    self.update.message.message_id,
                                                    reply_markup=telegram.InlineKeyboardMarkup(keyboard),
                                                    parse_mode=telegram.ParseMode.HTML, caption=caption)
@@ -194,11 +200,16 @@ class Application:
         for keyboard in keyboards:
             message = keyboard[0]
             callback = keyboard[1]
-            if len(keyboard) == 3:
+            if len(keyboard) >= 3:
                 inline = keyboard[2]
             else:
                 inline = None
-            keys.append(telegram.InlineKeyboardButton(message, callback_data=callback, switch_inline_query=inline))
+            if len(keyboard) >= 4:
+                url = keyboard[3]
+            else:
+                url = None
+            keys.append(
+                telegram.InlineKeyboardButton(message, callback_data=callback, switch_inline_query=inline, url=url))
         self.keyboard.append(keys)
 
     def add_inline_result(self):
@@ -264,7 +275,7 @@ class Application:
         elif self.is_message or self.is_command:
             self.send_message()
 
-    def connect_server(self, link, data, current_error="", main_error="", repeat=3):
+    def connect_server(self, link, data, current_error="", main_error="", repeat=3, alert=False):
         if repeat == 0:
             if current_error != "":
                 self.server_error(current_error, main_error)
@@ -299,13 +310,16 @@ class Application:
                     self.add_message("گروه انتخاب شده نادرست است.")
                 elif result_code == 23:
                     self.add_message("شما دیگر عضو گروه انتخاب شده نیستید.")
-                if self.message != "" and result_code != 10:
+                if self.message != "" and result_code != 10 and not alert:
                     if result_code in [20, 21, 22, 23]:
                         self.add_keyboard(
                             [["بازگشت به لیست گروه‌ها", "group#list_group"], ["بازگشت به صفحه اصلی", "group"]])
                     if self.is_callback:
                         self.answer_callback("خطایی پیش آمده")
                     self.send_edit()
+                elif self.alert:
+                    if self.is_callback and result_code in [20, 21, 22, 23]:
+                        self.answer_callback(self.message, True)
                 return result_code, output
             except Exception as e:
                 if DEBUG:
@@ -328,3 +342,12 @@ class Application:
             self.edit_message()
         elif self.is_message:
             self.send_message()
+
+    def send_message_group(self, chat_id=0):
+        if chat_id == 0:
+            chat_id = self.chat_id
+        try:
+            self.send_message(chat_id=chat_id)
+        except Exception as e:
+            if DEBUG:
+                print_color(e, Colors.RED_F)

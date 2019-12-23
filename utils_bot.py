@@ -176,6 +176,7 @@ class Application:
             self.edit_message()
         else:
             self.send_message()
+        # self.send_message()
 
     def answer_callback(self, message="", alert=None):
         if not self.is_callback:

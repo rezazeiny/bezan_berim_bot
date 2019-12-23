@@ -301,7 +301,7 @@ class Group(Application):
             self.answer_callback("شما عضو این گروه هستید.", True)
         elif result_code == 26:
             self.answer_callback("شما مجدد عضو گروه شدید", True)
-            self.add_message("کاربر " + output["user"]["name"] + "مجددا وارد گروه " + output["name"] + " شد.")
+            self.add_message("کاربر " + output["user"]["name"] + " مجددا وارد گروه " + output["name"] + " شد.")
             self.send_message_group(chat_id=output["chat_id"])
         elif result_code == 0:
             self.answer_callback("شما با موفقیت عضو گروه شدید", True)

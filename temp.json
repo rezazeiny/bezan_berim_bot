@@ -798,196 +798,196 @@
     }
   },
   {
-    'update_id': 296815583,
-    'inline_query': {
-      'id': '409488579123660064',
-      'query': '',
-      'offset': '',
-      'from': {
-        'id': 95341489,
-        'first_name': 'Reza',
-        'is_bot': False,
-        'last_name': 'Zeiny',
-        'username': 'Rezazeiny',
-        'language_code': 'fa'
+    "update_id": 296815583,
+    "inline_query": {
+      "id": "409488579123660064",
+      "query": "",
+      "offset": "",
+      "from": {
+        "id": 95341489,
+        "first_name": "Reza",
+        "is_bot": False,
+        "last_name": "Zeiny",
+        "username": "Rezazeiny",
+        "language_code": "fa"
       }
     },
-    '_effective_user': {
-      'id': 95341489,
-      'first_name': 'Reza',
-      'is_bot': False,
-      'last_name': 'Zeiny',
-      'username': 'Rezazeiny',
-      'language_code': 'fa'
+    "_effective_user": {
+      "id": 95341489,
+      "first_name": "Reza",
+      "is_bot": False,
+      "last_name": "Zeiny",
+      "username": "Rezazeiny",
+      "language_code": "fa"
     }
   },
   {
-    'user_id': 95341489,
-    'input_state': '',
-    'data': {
-      'input': ''
+    "user_id": 95341489,
+    "input_state": "",
+    "data": {
+      "input": ""
     },
-    'cache': {
-      'user': {
-        'result_code': 0,
-        'error_text': '',
-        'id': 95341489,
-        'name': 'رضا زینی',
-        'phone_number': '09350633006',
-        'phone_validation': True,
-        'cache_time': 1576533307.8593316
+    "cache": {
+      "user": {
+        "result_code": 0,
+        "error_text": "",
+        "id": 95341489,
+        "name": "رضا زینی",
+        "phone_number": "09350633006",
+        "phone_validation": True,
+        "cache_time": 1576533307.8593316
       },
-      'group': {
-        'result_code': 0,
-        'error_text': '',
-        'group_list': [
+      "group": {
+        "result_code": 0,
+        "error_text": "",
+        "group_list": [
           {
-            'name': 'تستتی',
-            'id': 1,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "تستتی",
+            "id": 1,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'رضازینتی',
-            'id': 3,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "رضازینتی",
+            "id": 3,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'کوه ۱۳۰۵',
-            'id': 4,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "کوه ۱۳۰۵",
+            "id": 4,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'ssass',
-            'id': 7,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "ssass",
+            "id": 7,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'ssass2',
-            'id': 8,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "ssass2",
+            "id": 8,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'salala1',
-            'id': 9,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "salala1",
+            "id": 9,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'wlsls',
-            'id': 10,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "wlsls",
+            "id": 10,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           },
           {
-            'name': 'koddd',
-            'id': 11,
-            'members': 1,
-            'delete': False,
-            'admin': {
-              'name': 'رضا زینی',
-              'id': 95341489
+            "name": "koddd",
+            "id": 11,
+            "members": 1,
+            "delete": False,
+            "admin": {
+              "name": "رضا زینی",
+              "id": 95341489
             },
-            'remain': 0
+            "remain": 0
           }
         ],
-        'group_id': 11,
-        'remain': 0,
-        'cache_time': 1576533319.2333925
+        "group_id": 11,
+        "remain": 0,
+        "cache_time": 1576533319.2333925
       },
-      'group_11': {
-        'result_code': 0,
-        'error_text': '',
-        'name': 'koddd',
-        'id': 11,
-        'delete': False,
-        'chat_id': 0,
-        'chat_block': False,
-        'admin': {
-          'name': 'رضا زینی',
-          'id': 95341489
+      "group_11": {
+        "result_code": 0,
+        "error_text": "",
+        "name": "koddd",
+        "id": 11,
+        "delete": False,
+        "chat_id": 0,
+        "chat_block": False,
+        "admin": {
+          "name": "رضا زینی",
+          "id": 95341489
         },
-        'member_len': 1,
-        'transaction_len': 0,
-        'remain': 0,
-        'cache_time': 1576533627.7667968
+        "member_len": 1,
+        "transaction_len": 0,
+        "remain": 0,
+        "cache_time": 1576533627.7667968
       },
-      'group_4': {
-        'result_code': 0,
-        'error_text': '',
-        'name': 'کوه ۱۳۰۵',
-        'id': 4,
-        'delete': False,
-        'chat_id': 0,
-        'chat_block': False,
-        'admin': {
-          'name': 'رضا زینی',
-          'id': 95341489
+      "group_4": {
+        "result_code": 0,
+        "error_text": "",
+        "name": "کوه ۱۳۰۵",
+        "id": 4,
+        "delete": False,
+        "chat_id": 0,
+        "chat_block": False,
+        "admin": {
+          "name": "رضا زینی",
+          "id": 95341489
         },
-        'member_len': 1,
-        'transaction_len': 0,
-        'remain': 0,
-        'cache_time': 1576533638.2936985
+        "member_len": 1,
+        "transaction_len": 0,
+        "remain": 0,
+        "cache_time": 1576533638.2936985
       },
-      'group_3': {
-        'result_code': 0,
-        'error_text': '',
-        'name': 'رضازینتی',
-        'id': 3,
-        'delete': False,
-        'chat_id': 0,
-        'chat_block': False,
-        'admin': {
-          'name': 'رضا زینی',
-          'id': 95341489
+      "group_3": {
+        "result_code": 0,
+        "error_text": "",
+        "name": "رضازینتی",
+        "id": 3,
+        "delete": False,
+        "chat_id": 0,
+        "chat_block": False,
+        "admin": {
+          "name": "رضا زینی",
+          "id": 95341489
         },
-        'member_len': 1,
-        'transaction_len': 0,
-        'remain': 0,
-        'cache_time': 1576533653.4527354
+        "member_len": 1,
+        "transaction_len": 0,
+        "remain": 0,
+        "cache_time": 1576533653.4527354
       }
     },
-    'register': True,
-    'chat': {}
+    "register": True,
+    "chat": {}
   }
 ]
 

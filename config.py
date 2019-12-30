@@ -9,7 +9,7 @@ CREATOR_EMAIL = "rezazeiny1998@gmail.com"
 CREATOR_ID = 95341489
 CHANNEL_NAME = "@bezzan_berim"
 DEBUG = True
-TEST_BOT = False
+TEST_BOT = True
 if TEST_BOT:
     TELEGRAM_API = "1000540195:AAF6xxRK_KEb0Iz2H9Qqaiz7ZXWcNr-eb3Q"
     BOT_ID = "@bezzan_berimbot"

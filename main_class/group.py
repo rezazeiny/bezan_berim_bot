@@ -1,3 +1,4 @@
+# from emoji.core import emojize
 from utils_bot import *
 
 
@@ -96,7 +97,8 @@ class Group(Application):
             groups = []
             for group in output["group_list"]:
                 if group["is_admin"]:
-                    group_name = emojize(":white_check_mark: ", use_aliases=True) + group["name"]
+                    # group_name = emojize(":white_check_mark: ", use_aliases=True) + group["name"]
+                    group_name = ":white_check_mark: " + group["name"]
 
                 else:
                     group_name = group["name"]
@@ -383,15 +385,87 @@ class Group(Application):
         self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
                            ["بازگشت به صفحه اصلی", "group"]])
         for member in output["member_list"]:
+            print(member["user"]["id"])
             self.add_keyboard(
                 [[member["user"]["name"] + " (مانده حساب: " + str(member["remain"]) + ")",
-                  self.group_link + "#detail_group"]])
+                  self.group_link + "#show_member_detail#" + str(member["user"]["id"])]])
             self.edit_message()
 
     def show_member_detail(self):
-        pass
+        if not self.is_callback or self.group_id == 0 or len(self.query) < 1:
+            return
+        if len(self.query) > 1:
+            if str(self.query[1]) == "a":
+                id_of_user = self.query[2]
+                print("we must add to group")
+            elif str(self.query[1]) == "d":
+                id_of_user = self.query[2]
+                print("we must delete from group")
+        result_code, output = self.connect_server("group/members/", {}, self.group_link + "#show_member", "group")
+        if result_code != 0:
+            return
 
+        current_user = None
+        for member in output["member_list"]:
+            if str(member["user"]["id"]) == str(self.query[0]):
+                current_user = member
+                break
+
+        number_of_transaction = 2
+        self.add_message("نام کاربری: " + str(current_user["user"]["name"]))
+        self.add_message("باقی مانده حساب: " + str(current_user["remain"]))
+        self.add_message("تعداد تراکنش: " + str(number_of_transaction))
+        if current_user["delete"]:
+            self.add_message("کاربر غیرفعال می باشد.")
+        self.add_keyboard([["بازگشت به لیست افراد" + self.group["name"], self.group_link + "#show_member"],
+                           ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
+                           ["بازگشت به صفحه اصلی", "group"]])
+        if self.group["admin"]["id"] == self.user_id and not current_user["delete"]:
+            self.add_keyboard([["حذف از گروه", self.group_link + "#show_member_detail#" + str(self.query[0]) +
+                                "#d#" + str(self.user_id)]])
+        elif self.group["admin"]["id"] == self.user_id and current_user["delete"]:
+            self.add_keyboard([["اضافه کردن به گروه", self.group_link + "#show_member_detail#" + str(self.query[0]) +
+                                "#a#" + str(self.user_id)]])
+        self.add_keyboard([["ارسال پیام", self.group_link + "#send_message_to_other#" + str(current_user["user"]["id"])
+                            + "#0"]])
+        self.send_edit()
     # todo: show member detail
+
+    def send_message_to_other(self):
+        if self.group_id != 0:
+            level = str(self.query[1])
+            input_state = self.group_link + "#send_message_to_other#" + str(self.query[0] + "#" + level)
+        else:
+            level = str(self.query[1])
+            input_state = "group#send_message_to_other#" + str(self.query[0] + "#" + level)
+        if self.is_command:
+            return
+        elif self.is_callback:
+            self.set_input_state(input_state)
+            self.message = "لطفا پیام خود را وارد کنید:"
+            # self.answer_callback("نام گروه را وارد نمایید")
+            self.send_message()
+        else:
+            result_code, output = self.connect_server("group/members/", {}, self.group_link + "#show_member", "group")
+            current_user = None
+            for member in output["member_list"]:
+                if str(member["user"]["id"]) == str(self.user_id):
+                    current_user = member
+            self.add_message("شما یک پیام از طرف " + current_user["user"]["name"] + " دارید")
+            self.add_message(self.input_data)
+            self.add_keyboard([["پاسخ پیام", self.group_link + "#send_message_to_other#" + str(self.user_id) + "#1"]])
+            self.send_message(chat_id=self.query[0])
+            self.message = ""
+            self.keyboard = [[]]
+            if str(self.query[1]) == "0":
+                self.add_message("پیام شما ارسال شد.")
+                self.add_keyboard([["بازگشت به لیست افراد" + self.group["name"], self.group_link + "#show_member"],
+                                   ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
+                                   ["بازگشت به صفحه اصلی", "group"]])
+                self.send_message()
+            else:
+                self.send_message("پیغام شما ارسال شد.")
+
 
     def show_transaction(self):
         if not self.is_callback or self.group_id == 0:
@@ -467,9 +541,11 @@ class Group(Application):
             for i in range(len(self.user_data["data"]["member_list"])):
                 member = self.user_data["data"]["member_list"][i]
                 if member["selected"]:
-                    para = emojize(":heavy_minus_sign: ", use_aliases=True)
+                    # para = emojize(":heavy_minus_sign: ", use_aliases=True)
+                    para = ":heavy_minus_sign: "
                 else:
-                    para = emojize(":heavy_plus_sign: ", use_aliases=True)
+                    # para = emojize(":heavy_plus_sign: ", use_aliases=True)
+                    para = ":heavy_plus_sign: "
 
                 self.add_keyboard(
                     [[para + member["user"]["name"] + " (مانده حساب: " + str(member["remain"]) + ")",

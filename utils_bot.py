@@ -1,6 +1,8 @@
 from functools import wraps
 from uuid import uuid4
-from emoji import emojize
+# from emoji import emoji_class
+# from emoji.core import emojize
+
 from utils import *
 import telegram
 

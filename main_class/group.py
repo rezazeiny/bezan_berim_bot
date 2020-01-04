@@ -550,7 +550,6 @@ class Group(Application):
 
         self.send_edit()
 
-
     def add_transaction(self):
         if self.is_command or self.group_id == 0:
             return

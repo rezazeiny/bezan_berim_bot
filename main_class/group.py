@@ -502,12 +502,19 @@ class Group(Application):
             return
 
         self.answer_callback("نمایش تراکنش‌ها")
+        print("A")
         self.add_message("نمایش تراکنش‌های گروه " + self.group["name"])
+        print("A1")
+
         self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
+
         for transaction in output["transaction_list"]:
+            print("A2")
+
             self.add_keyboard(
                 [[transaction["user"]["name"] + " (هزینه: " + str(transaction["cost"]) + ")",
                   self.group_link + "#show_transaction_detail#" + str(transaction["id"])]])
+            print("A3")
 
             self.edit_message()
 
@@ -535,6 +542,9 @@ class Group(Application):
 
                 self.add_message("نام اضافه‌کننده تراکنش:" + transaction["user"]["name"])
                 print("c")
+                if transaction["delete"]:
+                    self.add_message("این تراکنش حذف شده است." )
+
                 self.add_message("هزینه:" + str(transaction["cost"]))
                 members = transaction["member"]
                 self.add_message("*************")
@@ -557,10 +567,14 @@ class Group(Application):
     def delete_transaction(self):
         print("B")
         result_code, output = self.connect_server("group/del_transaction/", {"transaction_id": self.query[0]}, "group")
-        self.add_message("تراکنش مورد نظر حذف شد ")
-        self.add_keyboard([["بازگشت به لیست تراکنش‌ها", self.group_link + "#show_transaction"],
-                           ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
-
+        if result_code == 0:
+            self.add_message("تراکنش مورد نظر حذف شد ")
+            self.add_keyboard([["بازگشت به لیست تراکنش‌ها", self.group_link + "#show_transaction"],
+                               ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
+        else:
+            self.add_keyboard([["بازگشت به لیست تراکنش‌ها", self.group_link + "#show_transaction"],
+                               ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
+            self.add_message("تراکنش مورد قبلا حذف شده است. ")
         self.send_edit()
 
     def add_transaction(self):

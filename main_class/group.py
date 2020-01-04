@@ -189,9 +189,68 @@ class Group(Application):
             self.add_keyboard([["ارسال پیام به ادمین", self.group_link + "#send_message_to_other#" +
                                 str(self.group["admin"]["id"]) + "#0"], ["ترک گروه", self.group_link + "#left_group"]])
             # todo: send message to admin
+        self.add_keyboard([["ارسال بازخورد سفر", self.group_link + "#add_feedback#0"]])
         self.add_keyboard([["بازگشت به لیست گروه‌ها", "group#list_group"], ["بازگشت به صفحه اصلی", "group"]])
         self.answer_callback("جزئیات گروه")
         self.edit_message()
+
+    def add_feedback(self):
+        if self.is_command or self.group_id == 0:
+            return
+        level = int(self.query[0])
+        if level == 0:  # get cost
+            if self.is_callback:
+                self.user_data["data"] = {"input": ""}
+                self.set_input_state(self.group_link + "#add_feedback#0")
+                self.add_message("به من بگو کجا رفتی؟")
+                self.answer_callback("کجا رفتی")
+                self.send_edit()
+            else:
+                if len(self.input_data) >= 100:
+                    self.set_input_state(self.group_link + "#add_feedback#0")
+                    self.add_message("طول مکان مورد نظر زیاد است. لطفا مجدد وارد نمایید:")
+                    self.add_keyboard([["انصراف و بازگشت", "group"]])
+                    self.send_message()
+                    return
+                self.user_data["data"]["location"] = self.input_data
+                level = 1
+        if "location" not in self.user_data["data"]:
+            self.add_message("خطای مربوط به مکان")
+            self.send_edit()
+            return
+        if level == 1:  # get feedback
+            if self.is_callback:
+                self.set_input_state(self.group_link + "#add_feedback#1")
+                self.add_message("چیزی که می‌خوای بقیه درباره سفرت بدونن رو وارد کن.")
+                self.answer_callback("نظرت رو بگو")
+                self.send_edit()
+            else:
+                if len(self.input_data) <= 10:
+                    self.set_input_state(self.group_link + "#add_feedback#1")
+                    self.add_message("طول نظرت کمه. لطفا مجدد وارد نمایید:")
+                    self.add_keyboard([["انصراف و بازگشت", "group"]])
+                    self.send_message()
+                    return
+                if len(self.input_data) >= 1000:
+                    self.set_input_state(self.group_link + "#add_feedback#1")
+                    self.add_message("طول نظرت خیلی زیاده. لطفا مجدد وارد نمایید:")
+                    self.add_keyboard([["انصراف و بازگشت", "group"]])
+                    self.send_message()
+                    return
+                self.user_data["data"]["feedback"] = self.input_data
+        if "feedback" not in self.user_data["data"]:
+            self.add_message("خطای مربوط به نظر")
+            self.send_edit()
+            return
+        self.add_message(self.user_data["user"]["name"])
+        self.add_message("نام مکان: " + self.user_data["data"]["location"])
+        self.add_message(self.user_data["data"]["feedback"])
+        self.send_message_group(chat_id=CHANNEL_NAME)
+        self.message = ""
+        self.add_message("نظر شما ارسال شد. موفق باشید.")
+        self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
+                           ["بازگشت به صفحه اصلی", "group"]])
+        self.send_edit()
 
     def show_id(self):
         if not self.is_callback or self.group_id == 0:
@@ -543,7 +602,7 @@ class Group(Application):
                 self.add_message("نام اضافه‌کننده تراکنش:" + transaction["user"]["name"])
                 print("c")
                 if transaction["delete"]:
-                    self.add_message("این تراکنش حذف شده است." )
+                    self.add_message("این تراکنش حذف شده است.")
 
                 self.add_message("هزینه:" + str(transaction["cost"]))
                 members = transaction["member"]

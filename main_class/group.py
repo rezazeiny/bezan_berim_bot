@@ -438,13 +438,14 @@ class Group(Application):
         elif self.group["admin"]["id"] == self.user_id and current_user["delete"]:
             self.add_keyboard([["اضافه کردن به گروه", self.group_link + "#show_member_detail#" + str(self.query[0]) +
                                 "#a#" + str(self.user_id)]])
-        self.add_keyboard([["ارسال پیام", self.group_link + "#send_message_to_other#" + str(current_user["user"]["id"])
+        self.add_keyboard([["ارسال پیام", self.group_link + "#send_message_to_other#" + str(self.query[0])
                             + "#0"]])
         self.send_edit()
 
     # todo: show member detail
 
     def send_message_to_other(self):
+
         if self.group_id != 0:
             level = str(self.query[1])
             input_state = self.group_link + "#send_message_to_other#" + str(self.query[0] + "#" + level)
@@ -454,6 +455,7 @@ class Group(Application):
         if self.is_command:
             return
         elif self.is_callback:
+            self.answer_callback("لطفا پیام خود را وارد کنید.")
             self.set_input_state(input_state)
             self.message = "لطفا پیام خود را وارد کنید:"
             self.send_message()
@@ -474,6 +476,16 @@ class Group(Application):
                 self.add_keyboard([["بازگشت به لیست افراد" + self.group["name"], self.group_link + "#show_member"],
                                    ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
                                    ["بازگشت به صفحه اصلی", "group"]])
+                if self.group["admin"]["id"] == self.user_id and not current_user["delete"]:
+                    self.add_keyboard([["حذف از گروه", self.group_link + "#show_member_detail#" + str(self.query[0]) +
+                                        "#d#" + str(self.user_id)]])
+                elif self.group["admin"]["id"] == self.user_id and current_user["delete"]:
+                    self.add_keyboard(
+                        [["اضافه کردن به گروه", self.group_link + "#show_member_detail#" + str(self.query[0]) +
+                          "#a#" + str(self.user_id)]])
+                self.add_keyboard(
+                    [["ارسال پیام", self.group_link + "#send_message_to_other#" + str(self.query[0])
+                      + "#0"]])
                 self.send_message()
             else:
                 self.send_message("پیغام شما ارسال شد.")

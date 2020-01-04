@@ -3,21 +3,29 @@ import os
 import time
 
 KAVENEGAR_API = "4A52597851624C3531586154777A4772426E4466416D49536B643330364C746F"
-SERVER_URL = "http://localhost:8000/"
+SERVER_URL = "http://192.168.194.65:8000/"
 CREATOR_PHONE = "+989350633006"
 CREATOR_EMAIL = "rezazeiny1998@gmail.com"
 CREATOR_ID = 95341489
 CHANNEL_NAME = "@bezzan_berim"
 DEBUG = True
 TEST_BOT = True  # todo: change it to True when you are testing bot.
+TEST_NUM = 0
 if TEST_BOT:
-    TELEGRAM_API = "1000540195:AAF6xxRK_KEb0Iz2H9Qqaiz7ZXWcNr-eb3Q"
-    BOT_ID = "@bezzan_berimbot"
-    BOT_NAME = "bezzan_berimbot"
+    if TEST_NUM == 1:
+        TELEGRAM_API = "1012874124:AAEzHlWLylKGIePA1oS4L2KxN-brvpHzOU4"
+        BOT_ID = "@bezzan_berim_test1_bot"
+    elif TEST_NUM == 2:
+        TELEGRAM_API = "1011041942:AAHz7TD3XiLOiAdd7iU-SeF2zvvsDichZDY"
+        BOT_ID = "@bezzan_berim_test2_bot"
+    else:
+        TELEGRAM_API = "1000540195:AAF6xxRK_KEb0Iz2H9Qqaiz7ZXWcNr-eb3Q"
+        BOT_ID = "@bezzan_berimbot"
 else:
     TELEGRAM_API = "1017478270:AAHkUYL3tOWMEvFnPCqduFeDpzLgHNHnPDo"
     BOT_ID = "@bezzan_berim_bot"
-    BOT_NAME = "bezzan_berim_bot"
+
+BOT_NAME = BOT_ID[1:]
 
 PYTHON_PATH = os.path.realpath(__file__)
 PYTHON_DIRECTORY = "/".join(PYTHON_PATH.split("/")[:-1])

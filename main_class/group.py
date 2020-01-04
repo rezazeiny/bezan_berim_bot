@@ -429,6 +429,7 @@ class Group(Application):
         self.add_keyboard([["ارسال پیام", self.group_link + "#send_message_to_other#" + str(current_user["user"]["id"])
                             + "#0"]])
         self.send_edit()
+
     # todo: show member detail
 
     def send_message_to_other(self):
@@ -466,27 +467,78 @@ class Group(Application):
             else:
                 self.send_message("پیغام شما ارسال شد.")
 
-
     def show_transaction(self):
         if not self.is_callback or self.group_id == 0:
             return
         result_code, output = self.connect_server("group/transactions/", {}, self.group_link + "#show_member", "group")
         if result_code != 0:
             return
+        if len(output["transaction_list"]) == 0:
+            self.answer_callback("تراکنشی وجود ندارد.")
+            return
+
         self.answer_callback("نمایش تراکنش‌ها")
         self.add_message("نمایش تراکنش‌های گروه " + self.group["name"])
-        self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
-                           ["بازگشت به صفحه اصلی", "group"]])
+        self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
         for transaction in output["transaction_list"]:
             self.add_keyboard(
                 [[transaction["user"]["name"] + " (هزینه: " + str(transaction["cost"]) + ")",
-                  self.group_link + "#detail_group"]])
+                  self.group_link + "#show_transaction_detail#" + str(transaction["id"])]])
+
             self.edit_message()
 
     def show_transaction_detail(self):
-        pass
+        result_code, output = self.connect_server("group/transactions/", {}, self.group_link + "#show_member", "group")
+        if result_code != 0:
+            return
+        print("A")
 
-    # todo: show transaction detail
+        self.add_message("حذف و نمایش حزئیات تراکنش ")
+        self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
+        for transaction in output["transaction_list"]:
+            if str(transaction["id"]) == str(self.query[0]):
+                self.add_keyboard(
+                    [["نمایش جزئیات تراکنش",
+                      self.group_link + "#show_transaction_subdetail#" + str(transaction["id"])]])
+                self.add_keyboard([["حذف تراکنش", self.group_link + "#delete_transaction#" + str(transaction["id"])]])
+        self.edit_message()
+
+    def show_transaction_subdetail(self):
+        result_code, output = self.connect_server("group/transactions/", {}, self.group_link + "#show_member", "group")
+        print("B")
+        for transaction in output["transaction_list"]:
+            if str(transaction["id"]) == str(self.query[0]):
+
+                self.add_message("نام اضافه‌کننده تراکنش:" + transaction["user"]["name"])
+                print("c")
+                self.add_message("هزینه:" + str(transaction["cost"]))
+                members = transaction["member"]
+                self.add_message("*************")
+                print("c1")
+                for member in members:
+                    print(member["contribution"])
+                    self.add_message(
+                        "نام عضو:" + member["user"]["name"] + "//" + "میزان هزینه :" + str(member["contribution"]))
+                self.add_message("*************")
+
+                print("c2")
+
+                self.add_message("زمان اضافه شدن تراکنش:" + str(transaction["register_date"]))
+                print("c3")
+
+                self.add_keyboard([["بازگشت به لیست تراکنش‌ها", self.group_link + "#show_transaction"],
+                                   ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
+                self.edit_message()
+
+    def delete_transaction(self):
+        print("B")
+        result_code, output = self.connect_server("group/del_transaction/", {"transaction_id": self.query[0]}, "group")
+        self.add_message("تراکنش مورد نظر حذف شد ")
+        self.add_keyboard([["بازگشت به لیست تراکنش‌ها", self.group_link + "#show_transaction"],
+                           ["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"]])
+
+        self.send_edit()
+
 
     def add_transaction(self):
         if self.is_command or self.group_id == 0:
@@ -570,7 +622,6 @@ class Group(Application):
             self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
                                ["بازگشت به صفحه اصلی", "group"]])
             self.answer_callback("افزودن تراکنش")
-            self.add_message("ادامه این پیاده سازی نشده")
             self.edit_message()
             print(self.user_data["data"]["cost"])
 

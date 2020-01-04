@@ -205,6 +205,7 @@ class Group(Application):
                 self.add_message("به من بگو کجا رفتی؟")
                 self.answer_callback("کجا رفتی")
                 self.send_edit()
+                return
             else:
                 if len(self.input_data) >= 100:
                     self.set_input_state(self.group_link + "#add_feedback#0")
@@ -224,6 +225,7 @@ class Group(Application):
                 self.add_message("چیزی که می‌خوای بقیه درباره سفرت بدونن رو وارد کن.")
                 self.answer_callback("نظرت رو بگو")
                 self.send_edit()
+                return
             else:
                 if len(self.input_data) <= 10:
                     self.set_input_state(self.group_link + "#add_feedback#1")

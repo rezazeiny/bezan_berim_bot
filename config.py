@@ -9,8 +9,8 @@ CREATOR_EMAIL = "rezazeiny1998@gmail.com"
 CREATOR_ID = 95341489
 CHANNEL_NAME = "@bezzan_berim"
 DEBUG = True
-TEST_BOT = True  # todo: change it to True when you are testing bot.
-TEST_NUM = 0
+TEST_BOT = False  # todo: change it to True when you are testing bot.
+TEST_NUM = 1
 if TEST_BOT:
     if TEST_NUM == 1:
         TELEGRAM_API = "1012874124:AAEzHlWLylKGIePA1oS4L2KxN-brvpHzOU4"

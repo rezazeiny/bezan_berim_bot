@@ -186,7 +186,8 @@ class Group(Application):
             self.add_keyboard([["حذف گروه", self.group_link + "#delete_group"]])
         else:
             self.add_message("نام ادمین: " + self.group["admin"]["name"])
-            self.add_keyboard([["ارسال پیام به ادمین", "group"], ["ترک گروه", self.group_link + "#left_group"]])
+            self.add_keyboard([["ارسال پیام به ادمین", self.group_link + "#send_message_to_other#" +
+                                str(self.group["admin"]["id"]) + "#0"], ["ترک گروه", self.group_link + "#left_group"]])
             # todo: send message to admin
         self.add_keyboard([["بازگشت به لیست گروه‌ها", "group#list_group"], ["بازگشت به صفحه اصلی", "group"]])
         self.answer_callback("جزئیات گروه")
@@ -404,7 +405,7 @@ class Group(Application):
             if str(self.query[1]) == "a":
                 id_of_user = self.query[2]
                 result_code, output = self.connect_server("group/reopen/",
-                                                          {"delete":  False, "member_id": int(self.query[0])},
+                                                          {"delete": False, "member_id": int(self.query[0])},
                                                           self.group_link + "#show_member_detail",
                                                           "group")
             elif str(self.query[1]) == "d":

@@ -384,12 +384,18 @@ class Group(Application):
         self.add_message("نمایش اعضای گروه " + self.group["name"])
         self.add_keyboard([["بازگشت به گروه " + self.group["name"], self.group_link + "#detail_group"],
                            ["بازگشت به صفحه اصلی", "group"]])
+        number_of_member = len(output)
+        members = []
         for member in output["member_list"]:
-            print(member["user"]["id"])
-            self.add_keyboard(
-                [[member["user"]["name"] + " (مانده حساب: " + str(member["remain"]) + ")",
-                  self.group_link + "#show_member_detail#" + str(member["user"]["id"])]])
-            self.edit_message()
+            member_name = member["user"]["name"]
+            members.append([member["user"]["name"] + " (مانده حساب: " + str(member["remain"]) + ")",
+                            self.group_link + "#show_member_detail#" + str(member["user"]["id"])])
+            if len(members) == 2:
+                self.add_keyboard(members)
+                members = []
+        if len(members) > 0:
+            self.add_keyboard(members)
+        self.send_edit()
 
     def show_member_detail(self):
         if not self.is_callback or self.group_id == 0 or len(self.query) < 1:
@@ -397,10 +403,16 @@ class Group(Application):
         if len(self.query) > 1:
             if str(self.query[1]) == "a":
                 id_of_user = self.query[2]
-                print("we must add to group")
+                result_code, output = self.connect_server("group/reopen/",
+                                                          {"delete":  False, "member_id": int(self.query[0])},
+                                                          self.group_link + "#show_member_detail",
+                                                          "group")
             elif str(self.query[1]) == "d":
                 id_of_user = self.query[2]
-                print("we must delete from group")
+                result_code, output = self.connect_server("group/reopen/",
+                                                          {"delete": True, "member_id": int(self.query[0])},
+                                                          self.group_link + "#show_member_detail",
+                                                          "group")
         result_code, output = self.connect_server("group/members/", {}, self.group_link + "#show_member", "group")
         if result_code != 0:
             return
@@ -429,6 +441,7 @@ class Group(Application):
         self.add_keyboard([["ارسال پیام", self.group_link + "#send_message_to_other#" + str(current_user["user"]["id"])
                             + "#0"]])
         self.send_edit()
+
     # todo: show member detail
 
     def send_message_to_other(self):
@@ -443,7 +456,6 @@ class Group(Application):
         elif self.is_callback:
             self.set_input_state(input_state)
             self.message = "لطفا پیام خود را وارد کنید:"
-            # self.answer_callback("نام گروه را وارد نمایید")
             self.send_message()
         else:
             result_code, output = self.connect_server("group/members/", {}, self.group_link + "#show_member", "group")
@@ -465,7 +477,6 @@ class Group(Application):
                 self.send_message()
             else:
                 self.send_message("پیغام شما ارسال شد.")
-
 
     def show_transaction(self):
         if not self.is_callback or self.group_id == 0:

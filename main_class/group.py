@@ -248,6 +248,7 @@ class Group(Application):
         self.add_message("جایی که رفتن: " + self.user_data["data"]["location"])
         self.add_message("")
         self.add_message("چیزی که می خوان ما راجع به اونجا که رفتن بدونیم:")
+        self.add_message("")
         self.add_message(self.user_data["data"]["feedback"])
         self.send_message_group(chat_id=CHANNEL_NAME)
         self.message = ""

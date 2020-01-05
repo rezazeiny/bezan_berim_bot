@@ -97,8 +97,8 @@ class Group(Application):
             groups = []
             for group in output["group_list"]:
                 if group["is_admin"]:
-                    # group_name = emojize(":white_check_mark: ", use_aliases=True) + group["name"]
-                    group_name = ":white_check_mark: " + group["name"]
+                    group_name = emojize(":white_check_mark: ", use_aliases=True) + group["name"]
+                    # group_name = ":white_check_mark: " + group["name"]
 
                 else:
                     group_name = group["name"]
@@ -694,11 +694,11 @@ class Group(Application):
             for i in range(len(self.user_data["data"]["member_list"])):
                 member = self.user_data["data"]["member_list"][i]
                 if member["selected"]:
-                    # para = emojize(":heavy_minus_sign: ", use_aliases=True)
-                    para = ":heavy_minus_sign: "
+                    para = emojize(":heavy_minus_sign: ", use_aliases=True)
+                    # para = ":heavy_minus_sign: "
                 else:
-                    # para = emojize(":heavy_plus_sign: ", use_aliases=True)
-                    para = ":heavy_plus_sign: "
+                    para = emojize(":heavy_plus_sign: ", use_aliases=True)
+                    # para = ":heavy_plus_sign: "
 
                 self.add_keyboard(
                     [[para + member["user"]["name"] + " (مانده حساب: " + str(member["remain"]) + ")",

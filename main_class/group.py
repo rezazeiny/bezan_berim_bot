@@ -207,14 +207,13 @@ class Group(Application):
                 self.send_edit()
                 return
             else:
-                if len(self.input_data) >= 100:
-                    self.set_input_state(self.group_link + "#add_feedback#0")
-                    self.add_message("طول مکان مورد نظر زیاد است. لطفا مجدد وارد نمایید:")
-                    self.add_keyboard([["انصراف و بازگشت", "group"]])
-                    self.send_message()
-                    return
                 self.user_data["data"]["location"] = self.input_data
                 level = 1
+                self.add_message("مکان وارد شده:")
+                self.add_message(self.user_data["data"]["location"])
+                self.add_keyboard([["ادامه", self.group_link + "#add_feedback#1"], ["انصراف و بازگشت", "group"]])
+                self.send_edit()
+                return
         if "location" not in self.user_data["data"]:
             self.add_message("خطای مربوط به مکان")
             self.send_edit()
@@ -222,7 +221,7 @@ class Group(Application):
         if level == 1:  # get feedback
             if self.is_callback:
                 self.set_input_state(self.group_link + "#add_feedback#1")
-                self.add_message("چیزی که می‌خوای بقیه درباره سفرت بدونن رو وارد کن.")
+                self.add_message("چیزی که می‌خوای بقیه درباره سفرت بدونن رو بگو.")
                 self.answer_callback("نظرت رو بگو")
                 self.send_edit()
                 return
@@ -245,7 +244,10 @@ class Group(Application):
             self.send_edit()
             return
         self.add_message(self.user_data["user"]["name"])
-        self.add_message("نام مکان: " + self.user_data["data"]["location"])
+        self.add_message("")
+        self.add_message("جایی که رفتن: " + self.user_data["data"]["location"])
+        self.add_message("")
+        self.add_message("چیزی که می خوان ما راجع به اونجا که رفتن بدونیم:")
         self.add_message(self.user_data["data"]["feedback"])
         self.send_message_group(chat_id=CHANNEL_NAME)
         self.message = ""
